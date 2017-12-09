@@ -1,0 +1,52 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: testrpc
+      hasuraService: custom
+    name: testrpc
+    namespace: '{{ cluster.metadata.namespaces.user }}'
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: testrpc
+      spec:
+        containers:
+        - image: harshjv/testrpc
+          imagePullPolicy: IfNotPresent
+          name: testrpc
+          ports:
+          - containerPort: 8545
+            protocol: TCP
+          resources: {}
+        securityContext: {}
+        terminationGracePeriodSeconds: 0
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: testrpc
+      hasuraService: custom
+    name: testrpc
+    namespace: '{{ cluster.metadata.namespaces.user }}'
+  spec:
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8545
+    selector:
+      app: testrpc
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+kind: List
+metadata: {}
